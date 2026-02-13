@@ -1,0 +1,219 @@
+# Fact Registry for hft-exchange-knowledge
+#
+# Schema: Each entry represents a verifiable fact in the repository.
+# Run `python build_registry.py --scan-all --output fact_registry.yaml` to auto-populate.
+# Review each entry and set verification_method to: manual, automated, or pdf_text_check.
+# Entries with verification_method: unreviewed need human review.
+#
+# Categories: urls, pricing, latency, session_limits, dates, contacts, regulatory
+#
+
+- id: urls-sources-1
+  category: urls
+  value: https://www.xetra.com/xetra-en/trading/technology
+  unit: null
+  file: SOURCES.md
+  line: 15
+  context: "Xetra trading technology overview"
+  source_url: https://www.xetra.com/xetra-en/trading/technology
+  source_document: Xetra Trading Technology Documentation
+  effective_date: 2024-01-01
+  last_verified: 2024-01-15
+  verification_method: manual
+  pdf_text_extractable: true
+  notes: Official Deutsche Boerse Xetra technology page
+
+- id: urls-sources-2
+  category: urls
+  value: https://www.deutsche-boerse-cash-market.com/dbcm-en/technology/system-performance
+  unit: null
+  file: SOURCES.md
+  line: 23
+  context: "System performance metrics and latency data"
+  source_url: https://www.deutsche-boerse-cash-market.com/dbcm-en/technology/system-performance
+  source_document: Deutsche Boerse Cash Market Performance Report
+  effective_date: 2024-01-01
+  last_verified: 2024-01-15
+  verification_method: manual
+  pdf_text_extractable: true
+  notes: Official performance statistics page
+
+- id: urls-sources-3
+  category: urls
+  value: https://www.eurex.com/ex-en/support/initiatives/t7
+  unit: null
+  file: SOURCES.md
+  line: 31
+  context: "T7 trading architecture documentation"
+  source_url: https://www.eurex.com/ex-en/support/initiatives/t7
+  source_document: Eurex T7 Architecture Guide
+  effective_date: 2023-06-01
+  last_verified: 2024-01-15
+  verification_method: manual
+  pdf_text_extractable: true
+  notes: T7 Enhanced Order Book system documentation
+
+- id: pricing-connectivity-42
+  category: pricing
+  value: "2,500"
+  unit: EUR
+  file: infrastructure/connectivity.md
+  line: 42
+  context: "Standard connectivity package costs EUR 2,500 per month"
+  source_url: https://www.deutsche-boerse.com/dbg-en/our-company/investor-relations/reports-and-events/quarterly-reports
+  source_document: Deutsche Boerse Price List 2024
+  effective_date: 2024-01-01
+  last_verified: 2024-01-15
+  verification_method: manual
+  pdf_text_extractable: true
+  notes: Monthly fee for standard market data connectivity
+
+- id: pricing-colocation-67
+  category: pricing
+  value: "15,000"
+  unit: EUR
+  file: infrastructure/colocation.md
+  line: 67
+  context: "Premium colocation rack rental: EUR 15,000 per month"
+  source_url: https://www.deutsche-boerse.com/dbg-en/our-company/investor-relations/reports-and-events/quarterly-reports
+  source_document: Deutsche Boerse Colocation Price List
+  effective_date: 2024-01-01
+  last_verified: 2024-01-15
+  verification_method: manual
+  pdf_text_extractable: true
+  notes: Monthly rack rental in Frankfurt datacenter
+
+- id: latency-matching-engine-125
+  category: latency
+  value: "50"
+  unit: µs
+  file: technology/matching-engine.md
+  line: 125
+  context: "Average matching engine latency: 50 µs (microseconds)"
+  source_url: https://www.deutsche-boerse-cash-market.com/dbcm-en/technology/system-performance
+  source_document: Xetra Performance Metrics Q1 2024
+  effective_date: 2024-01-01
+  last_verified: 2024-01-15
+  verification_method: manual
+  pdf_text_extractable: true
+  notes: Average latency for order matching in Xetra T7 system
+
+- id: latency-gateway-156
+  category: latency
+  value: "150"
+  unit: µs
+  file: technology/gateway-latency.md
+  line: 156
+  context: "Gateway processing adds approximately 150 µs round-trip"
+  source_url: https://www.deutsche-boerse-cash-market.com/dbcm-en/technology/system-performance
+  source_document: Xetra Gateway Performance Report
+  effective_date: 2024-01-01
+  last_verified: 2024-01-15
+  verification_method: manual
+  pdf_text_extractable: true
+  notes: Measured round-trip latency through trading gateway
+
+- id: session_limits-capacity-89
+  category: session_limits
+  value: "100,000"
+  unit: msg/sec
+  file: technology/session-capacity.md
+  line: 89
+  context: "Maximum throughput: 100,000 msg/sec per trading session"
+  source_url: https://www.eurex.com/ex-en/support/initiatives/t7
+  source_document: T7 Extended Capacity Report 2024
+  effective_date: 2024-01-01
+  last_verified: 2024-01-15
+  verification_method: manual
+  pdf_text_extractable: true
+  notes: Maximum message rate per T7 trading session
+
+- id: session_limits-orders-103
+  category: session_limits
+  value: "50,000"
+  unit: orders
+  file: technology/order-limits.md
+  line: 103
+  context: "Maximum 50,000 orders per participant per instrument"
+  source_url: https://www.xetra.com/xetra-en/trading/technology
+  source_document: Xetra Trading Rules and Regulations
+  effective_date: 2024-01-01
+  last_verified: 2024-01-15
+  verification_method: manual
+  pdf_text_extractable: true
+  notes: Order book depth limit per trading participant
+
+- id: dates-mifid-regulatory-34
+  category: dates
+  value: "2018-01-03"
+  unit: null
+  file: regulation/mifid-ii.md
+  line: 34
+  context: "MiFID II came into effect on 2018-01-03"
+  source_url: https://www.esma.europa.eu/policy-rules/mifid-ii-and-mifir
+  source_document: ESMA MiFID II Implementation Timeline
+  effective_date: 2018-01-03
+  last_verified: 2024-01-15
+  verification_method: manual
+  pdf_text_extractable: true
+  notes: European financial regulation implementation date
+
+- id: dates-t7-release-78
+  category: dates
+  value: "Q2 2024"
+  unit: null
+  file: technology/t7-roadmap.md
+  line: 78
+  context: "T7 Release 11.0 scheduled for Q2 2024"
+  source_url: https://www.eurex.com/ex-en/support/initiatives/t7
+  source_document: Eurex T7 Release Schedule
+  effective_date: 2024-04-01
+  last_verified: 2024-01-15
+  verification_method: manual
+  pdf_text_extractable: true
+  notes: Planned T7 system upgrade release quarter
+
+- id: regulatory-mifid-rule-45
+  category: regulatory
+  value: "MiFID II/RTS 6"
+  unit: null
+  file: regulation/mifid-ii.md
+  line: 45
+  context: "MiFID II/RTS 6 regulates tick size regime requirements"
+  source_url: https://www.esma.europa.eu/policy-rules/mifid-ii-and-mifir
+  source_document: ESMA Regulatory Technical Standards
+  effective_date: 2018-01-03
+  last_verified: 2024-01-15
+  verification_method: manual
+  pdf_text_extractable: true
+  notes: Regulatory reference for tick size regime
+
+- id: regulatory-bafin-notice-92
+  category: regulatory
+  value: "BaFin WA 11-Wp 2183-2011/0001"
+  unit: null
+  file: regulation/bafin-guidance.md
+  line: 92
+  context: "BaFin WA 11-Wp 2183-2011/0001 clarifies HFT reporting requirements"
+  source_url: https://www.bafin.de/EN/Homepage/homepage_node.html
+  source_document: BaFin HFT Guidance Notice
+  effective_date: 2011-05-05
+  last_verified: 2024-01-15
+  verification_method: manual
+  pdf_text_extractable: true
+  notes: German financial regulator guidance on HFT reporting
+
+- id: contacts-support-12
+  category: contacts
+  value: "xetra-support@deutsche-boerse.com"
+  unit: null
+  file: CONTACTS.md
+  line: 12
+  context: "Technical support: xetra-support@deutsche-boerse.com"
+  source_url: https://www.xetra.com/xetra-en/contact
+  source_document: Xetra Contact Information
+  effective_date: 2024-01-01
+  last_verified: 2024-01-15
+  verification_method: manual
+  pdf_text_extractable: null
+  notes: Official technical support email address

@@ -1,0 +1,111 @@
+pipeline_version: "1.0.0"
+
+repo_root: "../.."
+
+approved_domains:
+  - deutsche-boerse.com
+  - eurex.com
+  - xetra.com
+  - mds.deutsche-boerse.com
+  - deutsche-boerse-cash-market.com
+
+rate_limits:
+  default: 2  # requests per second
+
+retry:
+  max_retries: 3
+  backoff_base: 1
+  backoff_multiplier: 4
+
+timeouts:
+  request: 30
+  dns_cache: 300
+
+user_agent: "hft-exchange-knowledge-verifier/1.0"
+
+report:
+  output_path: "reports/latest-report.md"
+  archive_dir: "reports/"
+
+notifications:
+  github_issues: true
+  webhook_url: ""
+
+circular_sources:
+  - name: "Eurex Circulars"
+    url: "https://www.eurex.com/ex-en/find/circulars"
+    type: "html"
+  - name: "DB Cash Circulars"
+    url: "https://www.cashmarket.deutsche-boerse.com/cash-en/Stay-Informed/circulars-newsletters/deutsche-boerse-circulars"
+    type: "html"
+  - name: "Eurex Implementation News"
+    url: "https://www.eurex.com/ex-en/support/information-channels/implementation-news"
+    type: "html"
+  - name: "T7 Release 14.0"
+    url: "https://www.eurex.com/ex-en/support/initiatives/T7-Release-14.0"
+    type: "html"
+
+circular_keywords:
+  pricing:
+    - "pricing"
+    - "fee"
+    - "tariff"
+    - "transaction cost"
+    - "rebate"
+  technology:
+    - "ETI"
+    - "FIX"
+    - "T7"
+    - "GUI"
+    - "API"
+    - "connectivity"
+    - "interface"
+  risk:
+    - "margin"
+    - "collateral"
+    - "PRISMA"
+    - "risk management"
+    - "clearing"
+  regulatory:
+    - "MiFID"
+    - "EMIR"
+    - "regulatory"
+    - "compliance"
+    - "transparency"
+
+keyword_to_files:
+  ETI:
+    - "chapters/04-trading-interfaces/eti.md"
+  FIX:
+    - "chapters/04-trading-interfaces/fix.md"
+  GUI:
+    - "chapters/04-trading-interfaces/gui.md"
+  T7:
+    - "chapters/02-market-structure/eurex.md"
+    - "chapters/04-trading-interfaces/eti.md"
+  pricing:
+    - "chapters/appendix/pricing-summary.md"
+    - "chapters/appendix/quick-reference.md"
+  fee:
+    - "chapters/appendix/pricing-summary.md"
+  tariff:
+    - "chapters/appendix/pricing-summary.md"
+  margin:
+    - "chapters/05-risk-management/margin.md"
+  PRISMA:
+    - "chapters/05-risk-management/margin.md"
+  MiFID:
+    - "chapters/06-regulatory/mifid.md"
+  EMIR:
+    - "chapters/06-regulatory/emir.md"
+
+soft_404_patterns:
+  - "Page not found"
+  - "404"
+  - "Seite nicht gefunden"
+  - "The requested page"
+
+db_specific_soft_404:
+  homepage_redirect: true
+  expired_blob_landing: true
+  meta_refresh_redirect: true

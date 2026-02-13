@@ -1,0 +1,6 @@
+# Verification pipeline state
+scripts/verification/.state/
+
+# Reports (except latest and gitkeep)
+reports/*.json
+!reports/.gitkeep
