@@ -139,7 +139,7 @@ def run_check(
     try:
         if check_name == 'links':
             logger.info("Running URL validation...")
-            checker = LinkChecker(config=config, repo_root=repo_root, dry_run=dry_run)
+            checker = LinkChecker(config=config, repo_root=repo_root, registry_path=registry_path)
             result = checker.run()
             output_file = output_dir / 'links_result.json'
 
@@ -157,18 +157,17 @@ def run_check(
             checker = FactChecker(
                 config=config,
                 repo_root=repo_root,
-                registry_path=registry_path,
-                dry_run=dry_run
+                registry_path=registry_path
             )
             result = checker.run()
             output_file = output_dir / 'facts_result.json'
 
         elif check_name == 'circulars':
             logger.info("Running circular monitoring...")
+            state_dir = Path(__file__).parent / '.state'
             monitor = CircularMonitor(
                 config=config,
-                repo_root=repo_root,
-                dry_run=dry_run
+                state_dir=state_dir
             )
             result = monitor.run()
             output_file = output_dir / 'circulars_result.json'
@@ -413,11 +412,16 @@ Examples:
         logger.info("Generating unified report...")
         try:
             report_gen = ReportGenerator(
-                results=results,
                 config=config,
                 output_dir=output_dir
             )
-            report_path = report_gen.generate()
+            exit_code = report_gen.run(
+                links_result=results.get('links', {}),
+                crossrefs_result=results.get('crossrefs', {}),
+                facts_result=results.get('facts', {}),
+                circulars_result=results.get('circulars', {})
+            )
+            report_path = output_dir / 'latest-report.md'
             logger.info(f"Report generated: {report_path}")
         except Exception as e:
             logger.error(f"Report generation failed: {e}", exc_info=True)

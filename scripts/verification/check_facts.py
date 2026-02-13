@@ -73,7 +73,8 @@ class FactChecker:
         # Initialize HTTP client
         self.http_client = RateLimitedClient(config)
 
-        logger.info(f"Loaded {len(self.registry.get('facts', []))} facts from registry")
+        facts = self.registry if isinstance(self.registry, list) else self.registry.get('facts', [])
+        logger.info(f"Loaded {len(facts)} facts from registry")
 
     def run(self) -> Dict:
         """
@@ -95,7 +96,7 @@ class FactChecker:
             "details": []
         }
 
-        facts = self.registry.get('facts', [])
+        facts = self.registry if isinstance(self.registry, list) else self.registry.get('facts', [])
         results["total_facts"] = len(facts)
 
         for fact in facts:
@@ -293,8 +294,9 @@ class FactChecker:
         source_url = fact.get('source_url', '')
 
         try:
-            # Fetch the HTML page
-            response = self.http_client.get(source_url)
+            # Fetch the HTML page using session with rate limiting
+            self.http_client._wait_for_rate_limit(self.http_client._get_domain(source_url))
+            response = self.http_client.session.get(source_url, timeout=self.http_client.timeout)
 
             if response.status_code != 200:
                 detail["status"] = self.STATUS_UNVERIFIABLE_AUTO
@@ -361,8 +363,9 @@ class FactChecker:
             return
 
         try:
-            # Fetch the PDF
-            response = self.http_client.get(source_url)
+            # Fetch the PDF using session with rate limiting
+            self.http_client._wait_for_rate_limit(self.http_client._get_domain(source_url))
+            response = self.http_client.session.get(source_url, timeout=self.http_client.timeout)
 
             if response.status_code != 200:
                 detail["status"] = self.STATUS_UNVERIFIABLE_PDF
@@ -371,7 +374,8 @@ class FactChecker:
                 return
 
             # Save PDF temporarily
-            temp_pdf_path = Path(f"/tmp/fact_check_{fact_id}.pdf")
+            import tempfile
+            temp_pdf_path = Path(tempfile.gettempdir()) / f"fact_check_{fact_id}.pdf"
             temp_pdf_path.write_bytes(response.content)
 
             try:

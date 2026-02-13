@@ -217,8 +217,11 @@ class CrossRefValidator:
 
                 for link_info in links:
                     total_links += 1
-                    target = link_info['target']
-                    line = link_info.get('line', 0)
+                    # Reconstruct full target (path#anchor) for resolve_link_path
+                    target = link_info.target_path
+                    if link_info.anchor:
+                        target = f"{target}#{link_info.anchor}"
+                    line = link_info.line_number
 
                     # Resolve the link
                     resolved_path, anchor = self.resolve_link_path(source_file, target)
@@ -286,8 +289,11 @@ class CrossRefValidator:
 
             for link_info in links:
                 total_toc_links += 1
-                target = link_info['target']
-                line = link_info.get('line', 0)
+                # Reconstruct full target (path#anchor) for resolve_link_path
+                target = link_info.target_path
+                if link_info.anchor:
+                    target = f"{target}#{link_info.anchor}"
+                line = link_info.line_number
 
                 # Resolve the link
                 resolved_path, anchor = self.resolve_link_path(self.toc_file, target)

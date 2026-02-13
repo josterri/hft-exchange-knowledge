@@ -61,11 +61,8 @@ class CircularMonitor:
         self.keywords = config.get("circular_keywords", {})
         self.keyword_to_files = config.get("keyword_to_files", {})
 
-        # Initialize HTTP client
-        self.client = RateLimitedClient(
-            rate_limit=10,  # 10 requests per minute to be respectful
-            period=60.0
-        )
+        # Initialize HTTP client with config
+        self.client = RateLimitedClient(config)
 
         # Load state
         self.state = self._load_state()
@@ -219,7 +216,8 @@ class CircularMonitor:
             feed_url = source_url.rstrip('/') + path
             try:
                 self.logger.info(f"Trying RSS feed: {feed_url}")
-                response = self.client.get(feed_url)
+                self.client._wait_for_rate_limit(self.client._get_domain(feed_url))
+                response = self.client.session.get(feed_url, timeout=self.client.timeout)
 
                 if response.status_code == 200:
                     feed = feedparser.parse(response.text)
@@ -349,7 +347,8 @@ class CircularMonitor:
 
         try:
             # Primary: HTML scraping
-            response = self.client.get(source_url)
+            self.client._wait_for_rate_limit(self.client._get_domain(source_url))
+            response = self.client.session.get(source_url, timeout=self.client.timeout)
             response.raise_for_status()
 
             entries = self._parse_html_circulars(response.text, source_name)

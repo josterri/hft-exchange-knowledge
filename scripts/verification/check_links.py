@@ -57,12 +57,8 @@ class LinkChecker:
         self.repo_root = repo_root
         self.registry_path = registry_path
 
-        # Initialize HTTP client with rate limits from config
-        rate_limits = config.get('rate_limits', {})
-        self.client = RateLimitedClient(
-            default_delay=rate_limits.get('default_delay', 1.0),
-            domain_delays=rate_limits.get('domain_delays', {})
-        )
+        # Initialize HTTP client with config
+        self.client = RateLimitedClient(config)
 
         # Load fact registry if available
         self.fact_registry = self._load_fact_registry()
@@ -103,11 +99,11 @@ class LinkChecker:
         for md_file in markdown_files:
             urls = extract_urls(md_file)
             for url_info in urls:
-                url = url_info['url']
+                url = url_info.url
                 location = {
                     'file': str(md_file.relative_to(self.repo_root)),
-                    'line': url_info['line'],
-                    'link_text': url_info['link_text']
+                    'line': url_info.line_number,
+                    'link_text': url_info.link_text
                 }
 
                 if url not in url_locations:
@@ -163,41 +159,74 @@ class LinkChecker:
 
         # Perform HTTP check
         if is_pdf and known_hash:
-            result = self.client.check_pdf(url, known_length, known_hash)
-        else:
-            result = self.client.check_url(url)
+            pdf_result = self.client.check_pdf(url, known_length, known_hash)
+            details = {
+                'error_detail': pdf_result.get('error', '') or '',
+                'final_url': url,
+                'status_code': pdf_result.get('status_code'),
+            }
+            if pdf_result.get('error'):
+                if 'timeout' in pdf_result['error'].lower():
+                    return ('TIMEOUT', details)
+                elif 'dns' in pdf_result['error'].lower() or 'getaddrinfo' in pdf_result['error'].lower():
+                    return ('DOMAIN_ERROR', details)
+                else:
+                    return ('DOMAIN_ERROR', details)
+            if pdf_result.get('status_code') == 404:
+                return ('NOT_FOUND', details)
+            if pdf_result.get('status_code', 0) >= 500:
+                return ('SERVER_ERROR', details)
+            if pdf_result.get('changed', False):
+                details['old_hash'] = known_hash
+                details['new_hash'] = pdf_result.get('new_hash')
+                details['old_content_length'] = known_length
+                details['new_content_length'] = pdf_result.get('new_content_length')
+                return ('MOVED_PDF', details)
+            return ('OK', details)
 
-        status = result['status']
+        # Standard URL fetch
+        result = self.client.fetch(url)
+
         details = {
-            'error_detail': result.get('error', ''),
+            'error_detail': result.get('error', '') or '',
             'final_url': result.get('final_url', url),
             'status_code': result.get('status_code'),
         }
 
-        # Classify based on result
-        if status == 'ok':
-            return ('OK', details)
-        elif status == 'redirect':
-            return ('REDIRECT', details)
-        elif status == 'pdf_changed':
-            details['old_hash'] = known_hash
-            details['new_hash'] = result.get('new_hash')
-            details['old_content_length'] = known_length
-            details['new_content_length'] = result.get('new_content_length')
-            return ('MOVED_PDF', details)
-        elif status == 'not_found':
-            return ('NOT_FOUND', details)
-        elif status == 'server_error':
-            return ('SERVER_ERROR', details)
-        elif status == 'timeout':
-            return ('TIMEOUT', details)
-        elif status == 'domain_error':
-            return ('DOMAIN_ERROR', details)
-        elif status == 'soft_404':
+        # Classify based on fetch result fields
+        error = result.get('error')
+        status_code = result.get('status_code', 0)
+        is_soft_404 = result.get('is_soft_404', False)
+        final_url = result.get('final_url', url)
+
+        if error is not None:
+            error_lower = error.lower()
+            if 'timeout' in error_lower or 'timed out' in error_lower:
+                return ('TIMEOUT', details)
+            elif 'dns' in error_lower or 'getaddrinfo' in error_lower or 'name or service not known' in error_lower:
+                return ('DOMAIN_ERROR', details)
+            else:
+                return ('DOMAIN_ERROR', details)
+
+        if status_code == 200 and is_soft_404:
             return ('SOFT_404', details)
-        else:
-            # Unknown status, treat as error
-            return ('DOMAIN_ERROR', details)
+
+        if status_code == 200:
+            if final_url != url:
+                return ('REDIRECT', details)
+            return ('OK', details)
+
+        if status_code in (301, 302, 303, 307, 308):
+            return ('REDIRECT', details)
+
+        if status_code == 404:
+            return ('NOT_FOUND', details)
+
+        if status_code >= 500:
+            return ('SERVER_ERROR', details)
+
+        # Fallback for other status codes
+        return ('DOMAIN_ERROR', details)
 
     def _generate_suggested_action(
         self,
