@@ -1,7 +1,63 @@
+# Theme
+remote_theme: just-the-docs/just-the-docs@v0.10.1
+
 title: "Deutsche Boerse HFT Exchange Knowledge Base"
-description: "Comprehensive tutorial covering T7 trading platform architecture, network infrastructure, trading interfaces, market data feeds, and more"
-theme: jekyll-theme-cayman
+description: "Comprehensive tutorial on T7 trading platform architecture, network infrastructure, trading interfaces, market data feeds, and more"
+
+# Markdown
 markdown: kramdown
 kramdown:
   input: GFM
   syntax_highlighter: rouge
+
+# just-the-docs configuration
+color_scheme: light
+
+# Search
+search_enabled: true
+search:
+  button: true
+
+# Aux links (top-right corner of top bar)
+aux_links:
+  "View on GitHub":
+    - "https://github.com/josterri/hft-exchange-knowledge"
+
+aux_links_new_tab: true
+
+# Footer
+footer_content: "This work is licensed under <a href=\"https://creativecommons.org/licenses/by-sa/4.0/\">CC BY-SA 4.0</a>. All content sourced exclusively from official Deutsche Boerse Group publications."
+
+# Mermaid diagram rendering (required -- all 6 diagram files use Mermaid syntax)
+mermaid:
+  version: "11"
+
+# Back to top link
+back_to_top: true
+back_to_top_text: "Back to top"
+
+# Heading anchor links
+heading_anchors: true
+
+# External navigation links (optional, in top bar)
+nav_external_links:
+  - title: Eurex
+    url: https://www.eurex.com
+    opens_in_new_tab: true
+  - title: Xetra
+    url: https://www.xetra.com
+    opens_in_new_tab: true
+
+# Plugins (jekyll-relative-links converts .md links to .html; not bundled with just-the-docs)
+plugins:
+  - jekyll-relative-links
+
+# Exclude non-content directories from Jekyll processing
+exclude:
+  - scripts/
+  - reports/
+  - .omc/
+  - node_modules/
+  - vendor/
+  - "*.py"
+  - requirements.txt
