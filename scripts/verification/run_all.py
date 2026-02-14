@@ -210,11 +210,29 @@ def determine_overall_status(results: Dict[str, Optional[Dict]]) -> str:
             has_critical = True
             continue
 
-        status = result.get('status', 'UNKNOWN')
-        if status == 'ACTION REQUIRED':
-            has_critical = True
-        elif status == 'WARNINGS':
-            has_warnings = True
+        if check_name == 'links':
+            link_results = result.get('results', {})
+            critical_count = sum(link_results.get(k, 0) for k in
+                               ('NOT_FOUND', 'SERVER_ERROR', 'TIMEOUT', 'DOMAIN_ERROR', 'SOFT_404'))
+            if critical_count > 0:
+                has_critical = True
+            if link_results.get('REDIRECT', 0) > 0 or link_results.get('MOVED_PDF', 0) > 0:
+                has_warnings = True
+
+        elif check_name == 'crossrefs':
+            if result.get('broken', 0) > 0:
+                has_critical = True
+
+        elif check_name == 'facts':
+            failures = result.get('failures', [])
+            if any(f.get('issue_type') in ('changed', 'needs_update') for f in failures):
+                has_critical = True
+            elif any(f.get('issue_type') == 'stale' for f in failures):
+                has_warnings = True
+
+        elif check_name == 'circulars':
+            if len(result.get('new_circulars', [])) > 0:
+                has_warnings = True
 
     if has_critical:
         return 'ACTION REQUIRED'
@@ -253,15 +271,15 @@ def print_summary(
     if 'links' in results:
         r = results['links']
         if r:
-            total = r.get('summary', {}).get('total_urls', 0)
-            failures = r.get('summary', {}).get('failures', 0)
+            total = r.get('unique_urls', 0)
+            failures = len(r.get('failures', []))
             print(f"Links: {total} checked, {failures} failures")
 
     if 'crossrefs' in results:
         r = results['crossrefs']
         if r:
-            total = r.get('summary', {}).get('total_refs', 0)
-            broken = r.get('summary', {}).get('broken', 0)
+            total = r.get('total_internal_links', 0)
+            broken = r.get('broken', 0)
             print(f"CrossRefs: {total} checked, {broken} broken")
 
     if 'facts' in results:

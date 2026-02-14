@@ -1,10 +1,17 @@
+---
+layout: default
+title: "Glossary"
+nav_order: 1
+parent: Appendices
+---
+
 # Glossary
 
 ## A
 
 ### ACE (Automated Corridor Expansion)
 Mechanism that automatically widens volatility interruption price corridors in specified time intervals.
-*See: [Chapter 9 - Risk Management](../09-risk-management/README.md)*
+*See: [Chapter 9 - Risk Controls](../09-risk-controls/README.md)*
 
 ### Advanced Risk Protection (ARP)
 Risk management feature in T7 that monitors trading activity in real-time to prevent breach of risk limits. Automatically blocks orders that would exceed predefined thresholds.

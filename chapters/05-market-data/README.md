@@ -1,3 +1,11 @@
+---
+layout: default
+title: "5. Market Data"
+nav_order: 5
+parent: Chapters
+has_children: true
+---
+
 # Chapter 5: Market Data Feeds
 
 ## Introduction
@@ -181,4 +189,4 @@ These commercial products simplify licensing by bundling permissions, but direct
 
 ---
 
-[Previous: Chapter 4 - Trading Interfaces](../04-trading-interfaces/README.md) | [Table of Contents](../../TABLE_OF_CONTENTS.md) | [Next: Chapter 6 - Order Types & Matching](../06-order-types/README.md)
+[Previous: Chapter 4 - Trading Interfaces](../04-trading-interfaces/README.md) | [Table of Contents](../../TABLE_OF_CONTENTS.md) | [Next: Chapter 6 - Order Types & Matching](../06-order-types-matching/README.md)

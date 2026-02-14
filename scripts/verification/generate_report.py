@@ -104,14 +104,12 @@ class ReportGenerator:
         facts = results.get("facts", {})
         circulars = results.get("circulars", {})
 
-        # Critical: 404s, changed facts, broken cross-refs, needs_update
+        # Critical: broken links, changed facts, broken cross-refs, needs_update
         link_failures = links.get("failures", [])
         critical_link_failures = [
             f
             for f in link_failures
-            if f.get("status_code") in [404, 500, 502, 503, 504]
-            or "domain" in f.get("error", "").lower()
-            or "timeout" in f.get("error", "").lower()
+            if f.get("status") in ("NOT_FOUND", "DOMAIN_ERROR", "TIMEOUT", "SERVER_ERROR", "SOFT_404")
         ]
 
         crossref_failures = crossrefs.get("failures", [])
@@ -137,10 +135,10 @@ class ReportGenerator:
         redirect_failures = [
             f
             for f in link_failures
-            if f.get("status_code") in [301, 302, 303, 307, 308]
+            if f.get("status") == "REDIRECT"
         ]
         pdf_updates = [
-            f for f in link_failures if "pdf" in f.get("error", "").lower()
+            f for f in link_failures if f.get("status") == "MOVED_PDF"
         ]
 
         stale_facts = [f for f in fact_details if f.get("issue_type") == "stale"]
@@ -233,28 +231,44 @@ class ReportGenerator:
         Returns:
             Metadata dictionary
         """
-        # Extract statistics
-        link_stats = results.get("links", {}).get("statistics", {})
-        fact_stats = results.get("facts", {}).get("statistics", {})
-        crossref_stats = results.get("crossrefs", {}).get("statistics", {})
-        circular_stats = results.get("circulars", {}).get("statistics", {})
+        # Extract statistics using actual checker output field names
+        link_data = results.get("links", {})
+        urls_checked = link_data.get("unique_urls", 0)
 
-        # Get run information from any result that has it
+        crossref_data = results.get("crossrefs", {})
+        internal_links_checked = crossref_data.get("total_internal_links", 0)
+
+        # Facts may still use statistics sub-dict
+        fact_data = results.get("facts", {})
+        facts_verified = (
+            fact_data.get("statistics", {}).get("total_facts", 0)
+            if fact_data.get("statistics")
+            else 0
+        )
+
+        # Circulars may still use statistics sub-dict
+        circular_data = results.get("circulars", {})
+        circular_sources = (
+            circular_data.get("statistics", {}).get("sources_checked", 0)
+            if circular_data.get("statistics")
+            else 0
+        )
+
+        # Get run information from any result that has a timestamp
         run_date = None
         run_time = None
 
-        for result in [
-            results.get("links"),
-            results.get("crossrefs"),
-            results.get("facts"),
-            results.get("circulars"),
-        ]:
-            if result and result.get("metadata"):
-                metadata = result["metadata"]
-                if not run_date:
-                    run_date = metadata.get("run_date")
-                if not run_time:
-                    run_time = metadata.get("run_time")
+        for result in [link_data, crossref_data, fact_data, circular_data]:
+            if result:
+                # Try metadata sub-dict first, then top-level timestamp
+                if result.get("metadata"):
+                    metadata = result["metadata"]
+                    if not run_date:
+                        run_date = metadata.get("run_date")
+                    if not run_time:
+                        run_time = metadata.get("run_time")
+                elif not run_date and result.get("timestamp"):
+                    run_date = result["timestamp"]
 
         if not run_date:
             run_date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
@@ -263,10 +277,10 @@ class ReportGenerator:
             "version": self.config.get("version", "1.0.0"),
             "run_date": run_date,
             "run_time": run_time or "N/A",
-            "urls_checked": link_stats.get("total_unique_urls", 0),
-            "facts_verified": fact_stats.get("total_facts", 0),
-            "internal_links_checked": crossref_stats.get("total_references", 0),
-            "circular_sources_checked": circular_stats.get("sources_checked", 0),
+            "urls_checked": urls_checked,
+            "facts_verified": facts_verified,
+            "internal_links_checked": internal_links_checked,
+            "circular_sources_checked": circular_sources,
         }
 
 
@@ -285,21 +299,23 @@ def load_results(results_dir: Path) -> tuple[dict, dict, dict, dict]:
     """
     results_dir = Path(results_dir)
 
-    # Default empty structures
+    # Default empty structures matching actual checker output formats
     empty_links = {
         "failures": [],
-        "checked_urls": [],
-        "statistics": {
-            "total_unique_urls": 0,
-            "failed_urls": 0,
-            "redirects": 0,
-            "pdf_updates": 0,
+        "unique_urls": 0,
+        "total_urls": 0,
+        "results": {
+            "OK": 0, "REDIRECT": 0, "MOVED_PDF": 0, "NOT_FOUND": 0,
+            "SERVER_ERROR": 0, "TIMEOUT": 0, "DOMAIN_ERROR": 0, "SOFT_404": 0,
         },
+        "pdf_updates": [],
     }
 
     empty_crossrefs = {
         "failures": [],
-        "statistics": {"total_references": 0, "valid_references": 0},
+        "total_internal_links": 0,
+        "valid": 0,
+        "broken": 0,
     }
 
     empty_facts = {

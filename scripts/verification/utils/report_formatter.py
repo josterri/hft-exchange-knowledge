@@ -54,22 +54,24 @@ def format_summary_table(results: dict) -> str:
 
     # URL Validation
     links = results.get("links", {})
-    link_stats = links.get("statistics", {})
-    total_urls = link_stats.get("total_unique_urls", 0)
-    failed_urls = link_stats.get("failed_urls", 0)
-    redirect_urls = link_stats.get("redirects", 0)
-    pdf_updates = link_stats.get("pdf_updates", 0)
+    total_urls = links.get("unique_urls", 0)
+    link_results = links.get("results", {})
+    # Count failures: everything in results except OK
+    failed_urls = sum(v for k, v in link_results.items() if k != "OK")
+    redirect_urls = link_results.get("REDIRECT", 0)
+    pdf_updates = link_results.get("MOVED_PDF", 0)
 
-    if failed_urls > 0:
+    if failed_urls - redirect_urls - pdf_updates > 0:
         link_status = "FAIL"
     elif redirect_urls > 0 or pdf_updates > 0:
         link_status = "WARN"
     else:
         link_status = "PASS"
 
-    link_details = f"{total_urls - failed_urls}/{total_urls} URLs OK"
+    ok_urls = link_results.get("OK", 0)
+    link_details = f"{ok_urls}/{total_urls} URLs OK"
     if failed_urls > 0:
-        link_details += f", {failed_urls} failures"
+        link_details += f", {failed_urls} issues"
     if redirect_urls > 0:
         link_details += f", {redirect_urls} redirects"
     if pdf_updates > 0:
@@ -79,9 +81,8 @@ def format_summary_table(results: dict) -> str:
 
     # Cross-References
     crossrefs = results.get("crossrefs", {})
-    crossref_stats = crossrefs.get("statistics", {})
-    total_refs = crossref_stats.get("total_references", 0)
-    valid_refs = crossref_stats.get("valid_references", 0)
+    total_refs = crossrefs.get("total_internal_links", 0)
+    valid_refs = crossrefs.get("valid", 0)
 
     if valid_refs == total_refs and total_refs > 0:
         crossref_status = "PASS"
@@ -142,7 +143,8 @@ def format_link_failures(failures: list[dict]) -> str:
 
     Args:
         failures: List of failed link dictionaries with keys:
-                  'url', 'status_code', 'error', 'file', 'line', 'link_text'
+                  'url', 'status' (string classification), 'locations' (array),
+                  'error_detail', 'final_url', 'suggested_action'
 
     Returns:
         Formatted Markdown section with tables
@@ -150,22 +152,18 @@ def format_link_failures(failures: list[dict]) -> str:
     if not failures:
         return ""
 
-    # Separate critical from warnings
+    # Separate critical from warnings based on status string classification
     critical = []
     warnings = []
 
     for failure in failures:
-        status_code = failure.get("status_code")
-        error = failure.get("error", "")
+        status = failure.get("status", "")
 
-        # Critical: 404, 5xx, domain errors, timeouts
-        if (status_code in [404, 500, 502, 503, 504] or
-            "domain" in error.lower() or
-            "timeout" in error.lower() or
-            "connection" in error.lower()):
+        # Critical: NOT_FOUND, DOMAIN_ERROR, TIMEOUT, SERVER_ERROR, SOFT_404
+        if status in ("NOT_FOUND", "DOMAIN_ERROR", "TIMEOUT", "SERVER_ERROR", "SOFT_404"):
             critical.append(failure)
-        # Warning: 3xx redirects, PDF updates
-        elif status_code in [301, 302, 303, 307, 308] or "pdf" in error.lower():
+        # Warning: REDIRECT, MOVED_PDF
+        elif status in ("REDIRECT", "MOVED_PDF"):
             warnings.append(failure)
         else:
             critical.append(failure)  # Default to critical
@@ -180,21 +178,12 @@ def format_link_failures(failures: list[dict]) -> str:
 
         for item in critical:
             url = item.get("url", "")
-            file_path = item.get("file", "")
-            line = str(item.get("line", ""))
-            link_text = item.get("link_text", "")
-            status = item.get("status_code", "")
-            error = item.get("error", "")
-
-            # Suggest action based on error type
-            if status == 404:
-                action = "Remove or replace link"
-            elif "domain" in error.lower():
-                action = "Verify domain or remove link"
-            elif status in [500, 502, 503, 504]:
-                action = "Retry later or find alternative"
-            else:
-                action = "Investigate and fix"
+            locations = item.get("locations", [])
+            first_loc = locations[0] if locations else {}
+            file_path = first_loc.get("file", "")
+            line = str(first_loc.get("line", ""))
+            link_text = first_loc.get("link_text", "")
+            action = item.get("suggested_action", "Investigate and fix")
 
             rows.append([url, file_path, line, link_text, action])
 
@@ -208,21 +197,19 @@ def format_link_failures(failures: list[dict]) -> str:
 
         for item in warnings:
             url = item.get("url", "")
-            file_path = item.get("file", "")
-            line = str(item.get("line", ""))
-            status = item.get("status_code", "")
-            error = item.get("error", "")
+            locations = item.get("locations", [])
+            first_loc = locations[0] if locations else {}
+            file_path = first_loc.get("file", "")
+            line = str(first_loc.get("line", ""))
 
-            # Determine status and action
-            if status in [301, 302, 303, 307, 308]:
-                status_text = f"Redirect ({status})"
-                action = "Update to final URL"
-            elif "pdf" in error.lower():
+            status_str = item.get("status", "")
+            if status_str == "REDIRECT":
+                status_text = f"Redirect -> {item.get('final_url', '')}"
+            elif status_str == "MOVED_PDF":
                 status_text = "PDF updated"
-                action = "Review PDF content changes"
             else:
-                status_text = str(status)
-                action = "Review"
+                status_text = status_str
+            action = item.get("suggested_action", "Review")
 
             rows.append([url, file_path, line, status_text, action])
 
