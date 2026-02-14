@@ -1,3 +1,11 @@
+---
+layout: default
+title: "MDI"
+nav_order: 3
+parent: "5. Market Data"
+grand_parent: Chapters
+---
+
 # Market Data Interface (MDI)
 
 The Market Data Interface (MDI) is Deutsche Boerse's aggregated, bandwidth-efficient market data feed designed for participants who require top-of-book quotes and trade data without the overhead of full order book reconstruction. MDI prioritizes low bandwidth consumption and broad accessibility over granular depth and ultra-low latency, making it the optimal choice for retail distribution, market surveillance, and monitoring applications.

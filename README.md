@@ -1,3 +1,10 @@
+---
+layout: default
+title: Home
+nav_order: 0
+permalink: /
+---
+
 # Deutsche Boerse HFT Exchange Knowledge Base
 
 A comprehensive, open-source tutorial and reference guide for understanding Deutsche Boerse Group's trading technology infrastructure -- covering the T7 trading platform, trading interfaces (ETI, FIX), market data feeds (EOBI, EMDI, MDI, RDI), co-location services, latency characteristics, market models, risk controls, and regulatory framework.

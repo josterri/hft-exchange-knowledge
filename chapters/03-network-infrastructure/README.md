@@ -1,3 +1,10 @@
+---
+layout: default
+title: "3. Network Infrastructure"
+nav_order: 3
+parent: Chapters
+---
+
 # Chapter 3: Network Infrastructure and Co-Location
 
 [<< Previous: Chapter 2 - T7 Architecture](../02-t7-architecture/README.md) | [Next: Chapter 4 - Trading Interfaces >>](../04-trading-interfaces/README.md)

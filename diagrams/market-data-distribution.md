@@ -1,3 +1,10 @@
+---
+layout: default
+title: "Market Data Distribution"
+nav_order: 4
+parent: Diagrams
+---
+
 # Market Data Distribution
 
 Deutsche Boerse's T7 system distributes market data through four specialized feeds, each optimized for different use cases. The architecture employs live-live redundancy across Side A and Side B multicast networks, with EOBI and EMDI publishers integrated directly into the matching engine process for minimal latency. This design ensures that public market data reaches all participants simultaneously, adhering to the "public data first" principle while offering differentiated service tiers based on depth, protocol, and latency requirements.

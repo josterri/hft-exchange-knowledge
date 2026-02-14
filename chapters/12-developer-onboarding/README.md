@@ -1,3 +1,10 @@
+---
+layout: default
+title: "12. Developer Onboarding"
+nav_order: 12
+parent: Chapters
+---
+
 # Chapter 12: Developer Onboarding & Resources
 
 ## Introduction

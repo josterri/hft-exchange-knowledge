@@ -1,3 +1,10 @@
+---
+layout: default
+title: "2. T7 Architecture"
+nav_order: 2
+parent: Chapters
+---
+
 # Chapter 2: T7 Trading System Architecture
 
 [<< Previous: Chapter 1 - Exchange Overview](../01-exchange-overview/README.md) | [Next: Chapter 3 - Network Infrastructure >>](../03-network-infrastructure/README.md)

@@ -1,3 +1,10 @@
+---
+layout: default
+title: "T7 Architecture Overview"
+nav_order: 1
+parent: Diagrams
+---
+
 # T7 Architecture Overview
 
 The following diagram illustrates the T7 trading system architecture, showing the participant layer, gateway layer, core processing components, market data distribution, and persistence infrastructure.

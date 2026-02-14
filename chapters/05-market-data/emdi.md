@@ -1,3 +1,11 @@
+---
+layout: default
+title: "EMDI"
+nav_order: 2
+parent: "5. Market Data"
+grand_parent: Chapters
+---
+
 # Enhanced Market Data Interface (EMDI)
 
 The Enhanced Market Data Interface (EMDI) is Deutsche Boerse's medium-latency market data feed that combines standardized FIX protocol encoding with aggregated order book data. EMDI provides a balanced solution for firms requiring comprehensive market data without the complexity of ultra-low-latency implementations, offering price-level aggregated order books with depths up to 15 levels.

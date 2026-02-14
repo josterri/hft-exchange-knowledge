@@ -1,3 +1,11 @@
+---
+layout: default
+title: "RDI"
+nav_order: 4
+parent: "5. Market Data"
+grand_parent: Chapters
+---
+
 # Reference Data Interface (RDI)
 
 The Reference Data Interface (RDI) is Deutsche Boerse's essential foundation for all trading and market data operations, providing static instrument definitions, product configurations, and system parameters required to interpret market data feeds and validate trading activity. Unlike the real-time feeds EOBI, EMDI, and MDI, RDI delivers reference information published before market open and updated intraday when instrument parameters change. All trading participants, regardless of their chosen market data feed, must consume RDI to maintain accurate instrument mappings, understand trading rules, and configure connectivity.

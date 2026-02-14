@@ -1,3 +1,9 @@
+---
+layout: default
+title: "Contributing"
+nav_order: 51
+---
+
 # Contributing
 
 Thank you for your interest in contributing to the Deutsche Boerse HFT Exchange Knowledge Base.

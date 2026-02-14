@@ -1,3 +1,10 @@
+---
+layout: default
+title: "10. Regulatory Framework"
+nav_order: 10
+parent: Chapters
+---
+
 # Chapter 10: Regulatory Framework
 
 ## Introduction

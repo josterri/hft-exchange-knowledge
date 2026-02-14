@@ -1,3 +1,9 @@
+---
+layout: default
+title: "Sources"
+nav_order: 50
+---
+
 # Sources
 
 All content in this repository is sourced exclusively from publicly available Deutsche Boerse Group websites.

@@ -1,3 +1,10 @@
+---
+layout: default
+title: "Release History"
+nav_order: 3
+parent: Appendices
+---
+
 # Appendix: T7 Release History
 
 ## Overview

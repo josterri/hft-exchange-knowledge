@@ -1,3 +1,10 @@
+---
+layout: default
+title: "11. Simulation & Testing"
+nav_order: 11
+parent: Chapters
+---
+
 # Chapter 11: Simulation & Testing Environments
 
 ## Introduction

@@ -1,3 +1,10 @@
+---
+layout: default
+title: "6. Order Types & Matching"
+nav_order: 6
+parent: Chapters
+---
+
 # Chapter 6: Order Types & Matching Engine
 
 The Deutsche Boerse T7 trading platform supports a sophisticated order management framework with over 15 distinct order types, multiple matching algorithms, and comprehensive risk protections at the order level. Understanding these mechanisms is critical for HFT developers building trading strategies on Eurex derivatives and Xetra equities markets.

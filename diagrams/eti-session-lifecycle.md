@@ -1,3 +1,10 @@
+---
+layout: default
+title: "ETI Session Lifecycle"
+nav_order: 5
+parent: Diagrams
+---
+
 # ETI Session Lifecycle
 
 This diagram illustrates the complete lifecycle of an ETI (Enhanced Trading Interface) session on Deutsche Boerse's T7 trading system, from connection establishment through order flow to session termination and recovery.

@@ -1,3 +1,10 @@
+---
+layout: default
+title: "9. Risk Controls"
+nav_order: 9
+parent: Chapters
+---
+
 # Chapter 9: Risk Controls & Pre-Trade Checks
 
 ## Introduction

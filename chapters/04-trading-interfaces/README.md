@@ -1,3 +1,11 @@
+---
+layout: default
+title: "4. Trading Interfaces"
+nav_order: 4
+parent: Chapters
+has_children: true
+---
+
 # Chapter 4: Trading Interfaces
 
 ## Introduction

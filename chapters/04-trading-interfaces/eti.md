@@ -1,3 +1,11 @@
+---
+layout: default
+title: "ETI Deep-Dive"
+nav_order: 1
+parent: "4. Trading Interfaces"
+grand_parent: Chapters
+---
+
 # Enhanced Trading Interface (ETI)
 
 The Enhanced Trading Interface (ETI) represents T7's native, high-performance trading protocol designed specifically for low-latency algorithmic trading. As Deutsche Boerse's proprietary binary protocol, ETI provides the most direct and optimized access path to T7 matching engines, delivering sub-55-microsecond median order-to-response latency for co-located high-frequency sessions. This deep-dive examines ETI's protocol architecture, session management, order lifecycle, specialized trading services, and technical implementation details essential for participants building high-performance connectivity to Eurex derivatives and Xetra cash markets.

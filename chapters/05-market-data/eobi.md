@@ -1,3 +1,11 @@
+---
+layout: default
+title: "EOBI"
+nav_order: 1
+parent: "5. Market Data"
+grand_parent: Chapters
+---
+
 # Enhanced Order Book Interface (EOBI)
 
 The Enhanced Order Book Interface (EOBI) is Deutsche Boerse's ultra-low latency market data feed, designed specifically for high-frequency trading and market-making applications. As the fastest market data feed available on the T7 trading platform, EOBI provides complete order book depth with individual order-level granularity and delivers trade information approximately 4 microseconds faster than any other feed on the platform.

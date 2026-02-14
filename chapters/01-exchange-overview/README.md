@@ -1,3 +1,10 @@
+---
+layout: default
+title: "1. Exchange Overview"
+nav_order: 1
+parent: Chapters
+---
+
 # Chapter 1: Deutsche Börse Exchange Overview
 
 ## Introduction

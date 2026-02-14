@@ -1,3 +1,10 @@
+---
+layout: default
+title: "Network Topology"
+nav_order: 2
+parent: Diagrams
+---
+
 # Network Topology Diagram
 
 This diagram illustrates Deutsche Börse's network topology for the T7 trading system, showing the co-location facility at Equinix FR2, connectivity options, network segments, and redundancy architecture.

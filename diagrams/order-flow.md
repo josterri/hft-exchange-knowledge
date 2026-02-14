@@ -1,3 +1,10 @@
+---
+layout: default
+title: "Order Lifecycle"
+nav_order: 3
+parent: Diagrams
+---
+
 # Order Lifecycle Flow
 
 ```mermaid

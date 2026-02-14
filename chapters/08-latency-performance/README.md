@@ -1,3 +1,10 @@
+---
+layout: default
+title: "8. Latency & Performance"
+nav_order: 8
+parent: Chapters
+---
+
 # Chapter 8: Latency & Performance
 
 ## Introduction

@@ -1,3 +1,11 @@
+---
+layout: default
+title: "FIX Gateway Deep-Dive"
+nav_order: 2
+parent: "4. Trading Interfaces"
+grand_parent: Chapters
+---
+
 # FIX Gateway
 
 ## Introduction

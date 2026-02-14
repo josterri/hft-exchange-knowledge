@@ -1,3 +1,10 @@
+---
+layout: default
+title: "Pricing Summary"
+nav_order: 4
+parent: Appendices
+---
+
 # Pricing Summary
 
 ## Disclaimer

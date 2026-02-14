@@ -1,3 +1,10 @@
+---
+layout: default
+title: "7. Market Models"
+nav_order: 7
+parent: Chapters
+---
+
 # Chapter 7: Market Models & Microstructure
 
 ## Introduction

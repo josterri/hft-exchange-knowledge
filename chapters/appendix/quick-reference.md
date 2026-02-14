@@ -1,3 +1,10 @@
+---
+layout: default
+title: "Quick Reference"
+nav_order: 2
+parent: Appendices
+---
+
 # Quick Reference
 
 **Deutsche Börse HFT Exchange Knowledge Base**
